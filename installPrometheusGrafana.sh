@@ -1,12 +1,9 @@
 #!/bin/bash
-
 #install prometheus
 #check version - https://prometheus.io/download/
 #your_ip:9090
-
 VERSION="2.34.0"
 VERSION_NODE="1.3.1"
-
 export VERSION=$VERSION &&
 groupadd --system prometheus &&
 useradd --system -g prometheus -s /bin/false prometheus &&
@@ -44,11 +41,9 @@ systemctl daemon-reload &&
 systemctl start prometheus.service &&
 systemctl enable prometheus.service &&
 systemctl status prometheus.service &&
-
 #install Node_exporter
 #check version - https://prometheus.io/download/
 #your_ip:9100
-
 export VERSION=$VERSION_NODE &&
 wget "https://github.com/prometheus/node_exporter/releases/download/v$VERSION_NODE/node_exporter-$VERSION_NODE.linux-amd64.tar.gz" -O - | tar -xzv -C /tmp &&
 cp  /tmp/node_exporter-$VERSION_NODE.linux-amd64/node_exporter /usr/local/bin &&
@@ -76,11 +71,9 @@ scrape_interval: 10s
 static_configs:
       - targets: ['localhost:9100'] " >> /etc/prometheus/prometheus.yml &&
 systemctl reload prometheus.service &&
-
 #install grafana
 #your_ip:3000
 #login/password - admin/admin
-
 apt-get install -y software-properties-common wget apt-transport-https &&
 wget -q -O - https://packages.grafana.com/gpg.key | apt-key add - &&
 add-apt-repository "deb https://packages.grafana.com/oss/deb stable main" &&
@@ -94,9 +87,7 @@ url: http://localhost:9090" > /etc/grafana/provisioning/datasources/prometheus.y
 chown grafana:grafana /etc/grafana/provisioning/datasources/prometheus.yml &&
 systemctl start grafana-server.service &&
 systemctl enable grafana-server.service &&
-
 #check services status
-
 systemctl status prometheus.service &&
 systemctl status node_exporter.service &&
 systemctl status grafana-server.service
